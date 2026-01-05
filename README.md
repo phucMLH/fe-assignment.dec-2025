@@ -9,8 +9,8 @@
 - **Stack**: React, TypeScript, TailwindCSS, Vite
 - **Backend**: Not required (mock data only)
 - **Design**:
-    - **Sheets**: https://docs.google.com/spreadsheets/d/18GvhNs3mLVjVoEUWlVMlNpNI3aGqqiozZvoLpwgew-k/edit?usp=sharing
-    - **Figma**: 
+    - **Sheets**: [link](https://docs.google.com/spreadsheets/d/18GvhNs3mLVjVoEUWlVMlNpNI3aGqqiozZvoLpwgew-k/edit?usp=sharing)
+    - **Figma**: [link](https://www.figma.com/design/YbtyD7VZFRL0OgGg1jTz5z/RFX---Assignment?node-id=0-1&p=f&t=Vcy92KesZyjqZtV8-0)
 - **Submission Format**: 
   - Candidate must fork this repository to a public repo under their name for submission. Notify email `hr@riverflow.solutions` when done.
   - Submit a Git repository link
