@@ -1,14 +1,14 @@
-import InboxHeader from '../components/inbox/InboxHeader';
-import MessageList from '../components/inbox/MessageList';
-import MessageDetail from '../components/inbox/MessageDetail';
-import Pagination from '../components/common/Pagination';
-import ComposeForm from '../components/compose/ComposeForm';
-import EmptyState from '../components/common/EmptyState';
-import LoadingSpinner from '../components/common/LoadingSpinner';
-import ErrorMessage from '../components/common/ErrorMessage';
-import { useInbox } from '../hooks/useInbox';
+import InboxHeader from './components/InboxHeader';
+import MessageList from './components/MessageList';
+import MessageDetail from './components/MessageDetail';
+import Pagination from '../../components/common/Pagination';
+import ComposeForm from './components/ComposeForm';
+import EmptyState from '../../components/common/EmptyState';
+import LoadingSpinner from '../../components/common/LoadingSpinner';
+import ErrorMessage from '../../components/common/ErrorMessage';
+import { useInbox } from './hooks/useInbox';
 
-export default function InboxPage() {
+export default function MessagePage() {
   const {
     selectedMessage,
     currentPage,
