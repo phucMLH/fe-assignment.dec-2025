@@ -1,13 +1,12 @@
 import "./index.css";
-import Header from "./components/layouts/Header";
+import MainLayout from "./components/layouts/MainLayout";
 import InboxPage from "./pages/InboxPage";
 
 function App() {
   return (
-    <div className="flex h-screen flex-col bg-neutral-50 font-sans">
-      <Header />
+    <MainLayout>
       <InboxPage />
-    </div>
+    </MainLayout>
   );
 }
 export default App;

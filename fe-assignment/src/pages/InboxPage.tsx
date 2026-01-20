@@ -1,5 +1,3 @@
-import MainLayout from '../components/layouts/MainLayout';
-import Sidebar from '../components/layouts/Sidebar';
 import InboxHeader from '../components/inbox/InboxHeader';
 import MessageList from '../components/inbox/MessageList';
 import MessageDetail from '../components/inbox/MessageDetail';
@@ -36,55 +34,57 @@ export default function InboxPage() {
   } = useInbox();
 
   return (
-    <MainLayout
-      sidebar={<Sidebar />}
-      main={
-        <div className="flex h-full flex-col">
-          <InboxHeader
-            totalMessages={totalMessages}
-            currentRange={currentRange}
-            onRefresh={handleRefresh}
-            onCompose={handleCompose}
-          />
-          <div className="flex-1 overflow-y-auto">
-            {isLoading ? (
-              <LoadingSpinner />
-            ) : error ? (
-              <ErrorMessage message={error} onRetry={handleRefresh} />
-            ) : totalMessages === 0 ? (
-              <EmptyState 
-                title="No messages yet" 
-                description="Your inbox is empty. Compose a new message to get started."
-              />
-            ) : (
-              <>
-                <MessageList messages={displayedMessages} onSelectMessage={setSelectedMessage} />
-                <div ref={listEndRef} />
-              </>
-            )}
-          </div>
-          {totalMessages > 0 && !isLoading && !error && (
-            <Pagination
-              currentPage={currentPage}
-              totalPages={Math.ceil(totalMessages / itemsPerPage)}
-              totalItems={totalMessages}
-              itemsPerPage={itemsPerPage}
-              onPageChange={setCurrentPage}
+    <>
+      {/* Center panel - Message List */}
+      <div className="flex flex-1 flex-col overflow-hidden border-r border-neutral-200 bg-white">
+        <InboxHeader
+          totalMessages={totalMessages}
+          currentRange={currentRange}
+          onRefresh={handleRefresh}
+          onCompose={handleCompose}
+        />
+        <div className="flex-1 overflow-y-auto">
+          {isLoading ? (
+            <LoadingSpinner />
+          ) : error ? (
+            <ErrorMessage message={error} onRetry={handleRefresh} />
+          ) : totalMessages === 0 ? (
+            <EmptyState 
+              title="No messages yet" 
+              description="Your inbox is empty. Compose a new message to get started."
             />
-          )}
-          {isComposing && (
-            <ComposeForm
-              onSend={handleSendMessage}
-              onCancel={handleCancelCompose}
-              mode={composeMode}
-              replyTo={replyTo}
-              replySubject={replySubject}
-              myEmail={myEmail}
-            />
+          ) : (
+            <>
+              <MessageList messages={displayedMessages} onSelectMessage={setSelectedMessage} />
+              <div ref={listEndRef} />
+            </>
           )}
         </div>
-      }
-      detail={<MessageDetail message={selectedMessage} onReply={handleReply} />}
-    />
+        {totalMessages > 0 && !isLoading && !error && (
+          <Pagination
+            currentPage={currentPage}
+            totalPages={Math.ceil(totalMessages / itemsPerPage)}
+            totalItems={totalMessages}
+            itemsPerPage={itemsPerPage}
+            onPageChange={setCurrentPage}
+          />
+        )}
+        {isComposing && (
+          <ComposeForm
+            onSend={handleSendMessage}
+            onCancel={handleCancelCompose}
+            mode={composeMode}
+            replyTo={replyTo}
+            replySubject={replySubject}
+            myEmail={myEmail}
+          />
+        )}
+      </div>
+
+      {/* Right panel - Message Detail */}
+      <div className="hidden w-full overflow-y-auto bg-white lg:block lg:w-96">
+        <MessageDetail message={selectedMessage} onReply={handleReply} />
+      </div>
+    </>
   );
 }
