@@ -1,12 +1,9 @@
-import type { Comment } from '../types/discussion';
+import type { Comment, Author } from '../types/discussion';
 import CommentItem from './CommentItem';
 
 interface CommentListProps {
   comments: Comment[];
-  currentUser: {
-    name: string;
-    avatar?: string;
-  };
+  currentUser: Author;
   onEditComment?: (commentId: string) => void;
   onDeleteComment?: (commentId: string) => void;
   onReplyToComment?: (commentId: string) => void;

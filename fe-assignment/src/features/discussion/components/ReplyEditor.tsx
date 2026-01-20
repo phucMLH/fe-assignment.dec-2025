@@ -1,10 +1,8 @@
 import { useState } from 'react';
+import type { Author } from '../types/discussion';
 
 interface ReplyEditorProps {
-  currentUser: {
-    name: string;
-    avatar?: string;
-  };
+  currentUser: Author;
   commentId: string;
   onSave: (commentId: string, content: string) => void;
   onDismiss: () => void;
@@ -27,6 +25,11 @@ export default function ReplyEditor({ currentUser, commentId, onSave, onDismiss 
 
       {/* Reply content */}
       <div className="flex flex-1 items-start gap-3">
+        {/* Avatar */}
+        <div className="flex h-[40px] w-[40px] flex-shrink-0 items-center justify-center rounded-full bg-primary-600 text-sm font-semibold text-white">
+          {currentUser.name.charAt(0).toUpperCase()}
+        </div>
+
         {/* Username label outside */}
         <div className="w-20 flex-shrink-0 pt-3">
           <span className="text-sm font-semibold text-neutral-900">[{currentUser.name}]</span>

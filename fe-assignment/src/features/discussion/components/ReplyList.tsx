@@ -1,13 +1,10 @@
-import type { Reply } from '../types/discussion';
+import type { Reply, Author } from '../types/discussion';
 import ReplyItem from './ReplyItem';
 
 interface ReplyListProps {
   replies: Reply[];
   commentId: string;
-  currentUser: {
-    name: string;
-    avatar?: string;
-  };
+  currentUser: Author;
   onEditReply?: (commentId: string, replyId: string) => void;
   onDeleteReply?: (commentId: string, replyId: string) => void;
 }

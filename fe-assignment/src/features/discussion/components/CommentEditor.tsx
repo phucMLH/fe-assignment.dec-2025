@@ -1,10 +1,8 @@
 import { useState } from 'react';
+import type { Author } from '../types/discussion';
 
 interface CommentEditorProps {
-  currentUser: {
-    name: string;
-    avatar?: string;
-  };
+  currentUser: Author;
   placeholder?: string;
   initialValue?: string;
   onSave: (content: string) => void;
