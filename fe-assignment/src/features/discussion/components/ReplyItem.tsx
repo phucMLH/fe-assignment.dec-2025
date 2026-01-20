@@ -1,33 +1,15 @@
-import type { Reply } from '../types/discussion';
+import type { Reply, Author } from '../types/discussion';
+import { formatRelativeTime } from '../../../utils/dateUtils';
 
 interface ReplyItemProps {
   reply: Reply;
   commentId: string;
-  currentUser: {
-    name: string;
-    avatar?: string;
-  };
+  currentUser: Author;
   onEdit?: (commentId: string, replyId: string) => void;
   onDelete?: (commentId: string, replyId: string) => void;
 }
 
 export default function ReplyItem({ reply, commentId, currentUser, onEdit, onDelete }: ReplyItemProps) {
-  const formatRelativeTime = (date: Date) => {
-    const now = new Date();
-    const diffMs = now.getTime() - new Date(date).getTime();
-    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-    const diffHours = Math.floor((diffMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    
-    if (diffDays > 0) {
-      return `${diffDays} days ${diffHours}h ago`;
-    } else if (diffHours > 0) {
-      return `${diffHours}h ago`;
-    } else {
-      const diffMinutes = Math.floor(diffMs / (1000 * 60));
-      return `${diffMinutes}m ago`;
-    }
-  };
-
   return (
     <div className="flex items-start gap-3">
       {/* Connector line spacer (where avatar would be) */}
@@ -35,10 +17,15 @@ export default function ReplyItem({ reply, commentId, currentUser, onEdit, onDel
 
       {/* Reply content */}
       <div className="flex flex-1 items-start gap-3">
+        {/* Avatar */}
+        <div className="flex h-[40px] w-[40px] flex-shrink-0 items-center justify-center rounded-full bg-primary-600 text-sm font-semibold text-white">
+          {reply.author.name.charAt(0).toUpperCase()}
+        </div>
+
         {/* Username label outside */}
         <div className="w-20 flex-shrink-0 pt-3">
           <span className="text-sm font-semibold text-neutral-900">
-            {reply.author.name === currentUser.name ? '[Login user]' : reply.author.name}
+            {reply.author.id === currentUser.id ? '[Login user]' : reply.author.name}
           </span>
         </div>
 

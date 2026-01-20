@@ -1,14 +1,12 @@
 import { useState } from 'react';
-import type { Comment } from '../types/discussion';
+import type { Comment, Author } from '../types/discussion';
 import ReplyList from './ReplyList';
 import ReplyEditor from './ReplyEditor';
+import { formatTimestamp } from '../../../utils/dateUtils';
 
 interface CommentItemProps {
   comment: Comment;
-  currentUser: {
-    name: string;
-    avatar?: string;
-  };
+  currentUser: Author;
   onEdit?: (commentId: string) => void;
   onDelete?: (commentId: string) => void;
   onReply?: (commentId: string) => void;
@@ -20,17 +18,6 @@ interface CommentItemProps {
 export default function CommentItem({ comment, currentUser, onEdit, onDelete, onReply, onEditReply, onDeleteReply, onSaveReply }: CommentItemProps) {
   const [isReplying, setIsReplying] = useState(false);
 
-  const formatTimestamp = (date: Date) => {
-    return new Intl.DateTimeFormat('en-US', {
-      month: '2-digit',
-      day: '2-digit',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: true,
-    }).format(new Date(date));
-  };
-
   return (
     <div className="relative mb-4">
       {/* Avatar line connector */}
@@ -41,12 +28,8 @@ export default function CommentItem({ comment, currentUser, onEdit, onDelete, on
       {/* Main comment card */}
       <div className="flex gap-3">
         {/* Avatar */}
-        <div className="relative z-10 h-[52px] w-[52px] flex-shrink-0">
-          <img
-            src={comment.author.avatar || 'https://i.pravatar.cc/150?img=1'}
-            alt={comment.author.name}
-            className="h-full w-full rounded-full object-cover"
-          />
+        <div className="relative z-10 flex h-[52px] w-[52px] flex-shrink-0 items-center justify-center rounded-full bg-primary-600 text-lg font-semibold text-white">
+          {comment.author.name.charAt(0).toUpperCase()}
         </div>
 
         {/* Comment content */}
