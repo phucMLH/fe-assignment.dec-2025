@@ -1,0 +1,61 @@
+@import "tailwindcss";
+
+@plugin "@tailwindcss/typography";
+
+@theme {
+  /* Primary color palette (Custom from Figma #166b99) */
+  --color-primary-50: #f0f7fb;
+  --color-primary-100: #dceef7;
+  --color-primary-200: #b9ddef;
+  --color-primary-300: #8ac4e3;
+  --color-primary-400: #4ea3d4;
+  --color-primary-500: #2888bc;
+  --color-primary-600: #166b99;
+  --color-primary-700: #115681;
+  --color-primary-800: #0e466a;
+  --color-primary-900: #0c3a58;
+  --color-primary-950: #07233a;
+
+  /* Secondary color palette (Purple shades) */
+  --color-secondary-50: #faf5ff;
+  --color-secondary-100: #f3e8ff;
+  --color-secondary-200: #e9d5ff;
+  --color-secondary-300: #d8b4fe;
+  --color-secondary-400: #c084fc;
+  --color-secondary-500: #a855f7;
+  --color-secondary-600: #9333ea;
+  --color-secondary-700: #7e22ce;
+  --color-secondary-800: #6b21a8;
+  --color-secondary-900: #581c87;
+  --color-secondary-950: #3b0764;
+
+  /* Accent color palette (Emerald/Green shades) */
+  --color-accent-50: #ecfdf5;
+  --color-accent-100: #d1fae5;
+  --color-accent-200: #a7f3d0;
+  --color-accent-300: #6ee7b7;
+  --color-accent-400: #34d399;
+  --color-accent-500: #10b981;
+  --color-accent-600: #059669;
+  --color-accent-700: #047857;
+  --color-accent-800: #065f46;
+  --color-accent-900: #064e3b;
+  --color-accent-950: #022c22;
+
+  /* Neutral color palette (Gray shades) */
+  --color-neutral-50: #f9fafb;
+  --color-neutral-100: #f3f4f6;
+  --color-neutral-200: #e5e7eb;
+  --color-neutral-300: #d1d5db;
+  --color-neutral-400: #9ca3af;
+  --color-neutral-500: #6b7280;
+  --color-neutral-600: #4b5563;
+  --color-neutral-700: #374151;
+  --color-neutral-800: #1f2937;
+  --color-neutral-900: #111827;
+  --color-neutral-950: #030712;
+
+  /* Font family */
+  --font-sans: "Roboto", ui-sans-serif, system-ui, sans-serif;
+  --font-roboto: "Roboto", sans-serif;
+}
