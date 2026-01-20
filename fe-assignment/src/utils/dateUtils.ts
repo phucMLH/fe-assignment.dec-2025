@@ -32,3 +32,11 @@ export function formatRelativeTime(date: Date): string {
     return `${diffMinutes}m ago`;
   }
 }
+
+/**
+ * Format date to YYYY-MM-DD format
+ * Example: 2021-01-12
+ */
+export function formatDateOnly(date: Date): string {
+  return date.toLocaleDateString('en-CA'); // en-CA returns YYYY-MM-DD format
+}
