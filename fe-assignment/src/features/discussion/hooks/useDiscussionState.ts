@@ -1,9 +1,30 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import type { Comment } from '../types/discussion';
 import { mockComments } from '../data/mockDiscussions';
 
 export function useDiscussionState() {
-  const [comments, setComments] = useState<Comment[]>(mockComments);
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // Simulate API call to load comments
+  useEffect(() => {
+    const loadComments = async () => {
+      try {
+        setIsLoading(true);
+        setError(null);
+        // Simulate network delay
+        await new Promise(resolve => setTimeout(resolve, 500));
+        setComments(mockComments);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Failed to load comments');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadComments();
+  }, []);
 
   const addComment = (content: string, author: { name: string; avatar?: string }) => {
     const newComment: Comment = {
@@ -96,6 +117,8 @@ export function useDiscussionState() {
 
   return {
     comments,
+    isLoading,
+    error,
     addComment,
     updateComment,
     deleteComment,

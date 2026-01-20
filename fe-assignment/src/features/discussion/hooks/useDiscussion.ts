@@ -1,15 +1,13 @@
 import { useDiscussionState } from './useDiscussionState';
 import { useCommentActions } from './useCommentActions';
 import { useReplyActions } from './useReplyActions';
+import type { Author } from '../types/discussion';
 
-interface CurrentUser {
-  name: string;
-  avatar?: string;
-}
-
-export function useDiscussion(currentUser: CurrentUser) {
+export function useDiscussion(currentUser: Author) {
   const {
     comments,
+    isLoading,
+    error,
     addComment,
     updateComment,
     deleteComment,
@@ -37,15 +35,17 @@ export function useDiscussion(currentUser: CurrentUser) {
     // Data
     comments,
     currentUser,
+    isLoading,
+    error,
 
-    // Comment actions
+    // Comment
     handleEditComment: commentActions.handleStartEdit,
     handleDeleteComment: commentActions.handleDelete,
     editingCommentId: commentActions.editingCommentId,
     handleSaveEditComment: commentActions.handleSaveEdit,
     handleCancelEditComment: commentActions.handleCancelEdit,
 
-    // Reply actions
+    // Reply
     handleReplyToComment: replyActions.handleStartReply,
     handleSaveReply: replyActions.handleSaveReply,
     handleCancelReply: replyActions.handleCancelReply,
@@ -57,7 +57,6 @@ export function useDiscussion(currentUser: CurrentUser) {
     handleDeleteReply: replyActions.handleDeleteReply,
     editingReplyId: replyActions.editingReplyId,
 
-    // Add comment
     handleAddComment,
   };
 }
