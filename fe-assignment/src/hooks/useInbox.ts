@@ -1,58 +1,60 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import type { Message } from '../types/message';
-import { mockMessages } from '../data/mockMessages';
+import { useMessageState } from './useMessageState';
+import { useMessageSelection } from './useMessageSelection';
+import { useCompose } from './useCompose';
+import { useLoadingError } from './useLoadingError';
 
 export function useInbox() {
-  const [messages, setMessages] = useState<Message[]>(mockMessages);
-  const [selectedMessage, setSelectedMessage] = useState<Message | null>(null);
+  const [myEmail] = useState('my-email@example.com');
   const [currentPage, setCurrentPage] = useState(1);
-  const [isComposing, setIsComposing] = useState(false);
-  const [composeMode, setComposeMode] = useState<'new' | 'reply'>('new');
-  const [replyTo, setReplyTo] = useState('');
-  const [replySubject, setReplySubject] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [myEmail] = useState('my-email@example.com'); // User's email address
-  const listEndRef = useRef<HTMLDivElement>(null);
+
+  // Compose các hooks con
+  const messageState = useMessageState();
+  const messageSelection = useMessageSelection();
+  const compose = useCompose(myEmail);
+  const loadingError = useLoadingError();
 
   // Dynamic items per page based on compose state
-  const itemsPerPage = isComposing ? 5 : 10;
-  const totalMessages = messages.length;
+  const itemsPerPage = compose.isComposing ? 5 : 10;
+  const totalMessages = messageState.messages.length;
 
-  // Auto-scroll to bottom when new message is added
-  useEffect(() => {
-    if (listEndRef.current && messages.length > mockMessages.length) {
-      listEndRef.current.scrollIntoView({ behavior: 'smooth' });
-    }
-  }, [messages.length]);
+  // Paginate messages
+  const displayedMessages = useMemo(() => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    return messageState.messages.slice(startIndex, endIndex);
+  }, [messageState.messages, currentPage, itemsPerPage]);
+
+  // Calculate current range for header display
+  const currentRange = useMemo(() => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    return {
+      start: startIndex + 1,
+      end: Math.min(endIndex, totalMessages),
+    };
+  }, [currentPage, itemsPerPage, totalMessages]);
 
   const handleSendMessage = (data: { from: string; to: string[]; subject: string; body: string }) => {
-    const newMessage = {
-      id: `reply-${Date.now()}`,
-      from: data.from,
-      subject: data.subject,
-      date: new Date().toISOString().split('T')[0],
-      preview: data.body.substring(0, 100) + (data.body.length > 100 ? '...' : ''),
-    };
-
     // If replying to an existing message, add to its related messages
-    if (composeMode === 'reply' && selectedMessage) {
-      const updatedMessages = messages.map(message => {
-        if (message.id === selectedMessage.id) {
-          return {
-            ...message,
-            relatedMessages: [newMessage, ...(message.relatedMessages || [])],
-          };
-        }
-        return message;
-      });
+    if (compose.composeMode === 'reply' && messageSelection.selectedMessage) {
+      const newReply = {
+        id: `reply-${Date.now()}`,
+        from: data.from,
+        subject: data.subject,
+        date: new Date().toISOString().split('T')[0],
+        preview: data.body.substring(0, 100) + (data.body.length > 100 ? '...' : ''),
+      };
       
-      setMessages(updatedMessages);
-      // Update selected message to show new reply
-      setSelectedMessage({
-        ...selectedMessage,
-        relatedMessages: [newMessage, ...(selectedMessage.relatedMessages || [])],
-      });
+      const updatedMessage = messageState.addReplyToMessage(
+        messageSelection.selectedMessage.id,
+        newReply
+      );
+      
+      if (updatedMessage) {
+        messageSelection.setSelectedMessage(updatedMessage);
+      }
     } else {
       // New message (not a reply)
       const fromName = data.from.split('@')[0];
@@ -67,38 +69,27 @@ export function useInbox() {
         relatedMessages: [],
       };
 
-      setMessages([newMsg, ...messages]);
-      setSelectedMessage(newMsg);
+      const addedMessage = messageState.addNewMessage(newMsg);
+      messageSelection.setSelectedMessage(addedMessage);
     }
     
-    setIsComposing(false);
+    compose.finishCompose();
   };
 
   const handleReply = (message: Message) => {
-    setComposeMode('reply');
-    // Reply to sender, or if I'm the sender, reply to all recipients
-    const replyToEmail = message.from.email === myEmail 
-      ? message.recipients.join(', ')
-      : message.from.email;
-    setReplyTo(replyToEmail);
-    setReplySubject(message.subject);
-    setIsComposing(true);
+    compose.startReply(message);
   };
 
   const handleCompose = () => {
-    setComposeMode('new');
-    setReplyTo('');
-    setReplySubject('');
-    setIsComposing(true);
+    compose.startCompose();
   };
 
   const handleCancelCompose = () => {
-    setIsComposing(false);
+    compose.cancelCompose();
   };
 
   const handleRefresh = async () => {
-    setIsLoading(true);
-    setError(null);
+    loadingError.startLoading();
     
     try {
       // Simulate API call
@@ -106,43 +97,32 @@ export function useInbox() {
       // In real app: const data = await fetchEmails();
       console.log('Refresh completed');
     } catch (err) {
-      setError('Failed to refresh messages. Please try again.');
+      loadingError.setErrorMessage('Failed to refresh messages. Please try again.');
     } finally {
-      setIsLoading(false);
+      loadingError.stopLoading();
     }
-  };
-
-  // Paginate messages based on current page and items per page
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const displayedMessages = messages.slice(startIndex, endIndex);
-
-  // Calculate current range for header display
-  const currentRange = {
-    start: startIndex + 1,
-    end: Math.min(endIndex, totalMessages),
   };
 
   return {
     // State
-    messages,
-    selectedMessage,
+    messages: messageState.messages,
+    selectedMessage: messageSelection.selectedMessage,
     currentPage,
     currentRange,
-    isComposing,
-    composeMode,
-    replyTo,
-    replySubject,
+    isComposing: compose.isComposing,
+    composeMode: compose.composeMode,
+    replyTo: compose.replyTo,
+    replySubject: compose.replySubject,
     displayedMessages,
-    listEndRef,
+    listEndRef: messageState.listEndRef,
     myEmail,
     itemsPerPage,
     totalMessages,
-    isLoading,
-    error,
+    isLoading: loadingError.isLoading,
+    error: loadingError.error,
     
     // Handlers
-    setSelectedMessage,
+    setSelectedMessage: messageSelection.setSelectedMessage,
     setCurrentPage,
     handleSendMessage,
     handleReply,
