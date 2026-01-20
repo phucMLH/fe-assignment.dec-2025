@@ -8,7 +8,6 @@ export function useLoadingError() {
     setIsLoading(true);
     setError(null);
   };
-
   const stopLoading = () => {
     setIsLoading(false);
   };
