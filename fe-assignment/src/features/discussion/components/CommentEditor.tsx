@@ -69,12 +69,8 @@ export default function CommentEditor({
   return (
     <div className="flex gap-3">
       {/* Avatar */}
-      <div className="h-13 w-13 flex-shrink-0">
-        <img
-          src={currentUser.avatar || 'https://i.pravatar.cc/150?img=5'}
-          alt={currentUser.name}
-          className="h-full w-full rounded-full object-cover"
-        />
+      <div className="flex h-[52px] w-[52px] flex-shrink-0 items-center justify-center rounded-full bg-primary-600 text-lg font-semibold text-white">
+        {currentUser.name.charAt(0).toUpperCase()}
       </div>
 
       {/* Editor content */}
