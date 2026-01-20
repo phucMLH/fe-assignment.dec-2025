@@ -1,11 +1,11 @@
 import "./index.css";
 import MainLayout from "./components/layouts/MainLayout";
-import InboxPage from "./pages/InboxPage";
+import MessagePage from "./features/message/MessagePage";
 
 function App() {
   return (
     <MainLayout>
-      <InboxPage />
+      <MessagePage />
     </MainLayout>
   );
 }

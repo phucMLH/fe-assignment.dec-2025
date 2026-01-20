@@ -3,7 +3,7 @@ import type { Message } from '../types/message';
 import { useMessageState } from './useMessageState';
 import { useMessageSelection } from './useMessageSelection';
 import { useCompose } from './useCompose';
-import { useLoadingError } from './useLoadingError';
+import { useLoadingError } from '../../../hooks/useLoadingError';
 
 export function useInbox() {
   const [myEmail] = useState('my-email@example.com');
