@@ -1,15 +1,16 @@
 import CommentList from './components/CommentList';
 import CommentEditor from './components/CommentEditor';
 import { useDiscussion } from './hooks/useDiscussion';
+import { currentUser } from './data/mockUsers';
+import LoadingSpinner from '../../components/common/LoadingSpinner';
+import EmptyState from '../../components/common/EmptyState';
+import ErrorMessage from '../../components/common/ErrorMessage';
 
 export default function DiscussionPage() {
-  const currentUser = {
-    name: 'Login user',
-    avatar: 'https://i.pravatar.cc/150?img=5',
-  };
-
   const {
     comments,
+    isLoading,
+    error,
     handleEditComment,
     handleDeleteComment,
     handleReplyToComment,
@@ -27,27 +28,63 @@ export default function DiscussionPage() {
           <h1 className="text-2xl font-bold text-neutral-900">2. Discussion</h1>
         </div>
 
-        {/* Comments */}
-        <CommentList
-          comments={comments}
-          currentUser={currentUser}
-          onEditComment={handleEditComment}
-          onDeleteComment={handleDeleteComment}
-          onReplyToComment={handleReplyToComment}
-          onEditReply={handleEditReply}
-          onDeleteReply={handleDeleteReply}
-          onSaveReply={handleSaveReply}
-        />
+        {/* Loading State */}
+        {isLoading && <LoadingSpinner size="lg" />}
 
-        {/* Add new comment editor */}
-        <div className="mt-6">
-          <CommentEditor
-            currentUser={currentUser}
-            placeholder="Add new comments"
-            onSave={handleAddComment}
-            onDismiss={() => {}}
+        {/* Error State */}
+        {error && !isLoading && (
+          <ErrorMessage
+            message={error}
+            onRetry={() => window.location.reload()}
           />
-        </div>
+        )}
+
+        {/* Empty State */}
+        {!isLoading && !error && comments.length === 0 && (
+          <EmptyState
+            title="No comments yet"
+            description="Be the first to start a discussion!"
+          />
+        )}
+
+        {/* Content */}
+        {!isLoading && !error && comments.length > 0 && (
+          <>
+            {/* Comments */}
+            <CommentList
+              comments={comments}
+              currentUser={currentUser}
+              onEditComment={handleEditComment}
+              onDeleteComment={handleDeleteComment}
+              onReplyToComment={handleReplyToComment}
+              onEditReply={handleEditReply}
+              onDeleteReply={handleDeleteReply}
+              onSaveReply={handleSaveReply}
+            />
+
+            {/* Add new comment editor */}
+            <div className="mt-6">
+              <CommentEditor
+                currentUser={currentUser}
+                placeholder="Add new comments"
+                onSave={handleAddComment}
+                onDismiss={() => {}}
+              />
+            </div>
+          </>
+        )}
+
+        {/* Always show editor when not loading/error */}
+        {!isLoading && !error && comments.length === 0 && (
+          <div className="mt-6">
+            <CommentEditor
+              currentUser={currentUser}
+              placeholder="Add new comments"
+              onSave={handleAddComment}
+              onDismiss={() => {}}
+            />
+          </div>
+        )}
       </div>
     </div>
   );
