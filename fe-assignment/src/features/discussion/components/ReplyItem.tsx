@@ -1,0 +1,73 @@
+import type { Reply } from '../types/discussion';
+
+interface ReplyItemProps {
+  reply: Reply;
+  commentId: string;
+  currentUser: {
+    name: string;
+    avatar?: string;
+  };
+  onEdit?: (commentId: string, replyId: string) => void;
+  onDelete?: (commentId: string, replyId: string) => void;
+}
+
+export default function ReplyItem({ reply, commentId, currentUser, onEdit, onDelete }: ReplyItemProps) {
+  const formatRelativeTime = (date: Date) => {
+    const now = new Date();
+    const diffMs = now.getTime() - new Date(date).getTime();
+    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+    const diffHours = Math.floor((diffMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    
+    if (diffDays > 0) {
+      return `${diffDays} days ${diffHours}h ago`;
+    } else if (diffHours > 0) {
+      return `${diffHours}h ago`;
+    } else {
+      const diffMinutes = Math.floor(diffMs / (1000 * 60));
+      return `${diffMinutes}m ago`;
+    }
+  };
+
+  return (
+    <div className="flex items-start gap-3">
+      {/* Connector line spacer (where avatar would be) */}
+      <div className="w-13 flex-shrink-0" />
+
+      {/* Reply content */}
+      <div className="flex flex-1 items-start gap-3">
+        {/* Username label outside */}
+        <div className="w-20 flex-shrink-0 pt-3">
+          <span className="text-sm font-semibold text-neutral-900">
+            {reply.author.name === currentUser.name ? '[Login user]' : reply.author.name}
+          </span>
+        </div>
+
+        {/* Reply bubble */}
+        <div className="flex-1">
+          <div className="rounded-lg bg-white p-3 shadow-sm">
+            <p className="whitespace-pre-wrap text-sm text-neutral-700">{reply.content}</p>
+          </div>
+        </div>
+
+        {/* Actions on the right */}
+        <div className="flex flex-shrink-0 items-center gap-2 pt-3 text-sm text-neutral-600">
+          <span>{formatRelativeTime(reply.timestamp)}</span>
+          <span>|</span>
+          <button
+            onClick={() => onEdit?.(commentId, reply.id)}
+            className="text-primary-600 hover:text-primary-700"
+          >
+            Edit
+          </button>
+          <span>|</span>
+          <button
+            onClick={() => onDelete?.(commentId, reply.id)}
+            className="text-red-600 hover:text-red-700"
+          >
+            🗑️
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
